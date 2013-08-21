@@ -1,0 +1,43 @@
+clear all;close all
+%%%% Inputs %%%%%%%%%
+    %%%% Embryo length in micrometers
+    Lb=666;
+    Ls=498;
+
+    %%%% Length constant of protein gradient on relative scale
+    lambda=0.22; 
+
+    %%%% Relative position of mRNA center 
+    XOb=0.06;
+    XOs=0.04;
+
+    %%%% Standard deviation of Gaussian
+    SIGMAb=0.12;
+    SIGMAs=0.01;
+    
+    %%%% Standard deviation of B0
+    BOb=25;
+    BOs=42;    
+    
+%%%% Determine the ratio of production rate to decay rate within a scaled space unit
+SO2ALPHAb=BOb/exp(SIGMAb^2/2/lambda^2)/(1+erf((-SIGMAb^2/lambda)/2^0.5/SIGMAb)+erfc((SIGMAb^2/lambda)/2^0.5/SIGMAb))*4*lambda;
+SO2ALPHAs=BOs/exp(SIGMAs^2/2/lambda^2)/(1+erf((-SIGMAs^2/lambda)/2^0.5/SIGMAs)+erfc((SIGMAs^2/lambda)/2^0.5/SIGMAs))*4*lambda;
+
+%%%%%%%%%% Solution %%%%%%%%%%%%
+
+X=0:0.01:1;
+
+Bb=exp(-(X-XOb)/lambda+SIGMAb^2/2/lambda^2)*SO2ALPHAb/4/lambda.*(1+erf((X-XOb-SIGMAb^2/lambda)/2^0.5/SIGMAb)+exp((X-XOb)*2/lambda).*erfc((X-XOb+SIGMAb^2/lambda)/2^0.5/SIGMAb));
+Bs=exp(-(X-XOs)/lambda+SIGMAs^2/2/lambda^2)*SO2ALPHAs/4/lambda.*(1+erf((X-XOs-SIGMAs^2/lambda)/2^0.5/SIGMAs)+exp((X-XOs)*2/lambda).*erfc((X-XOs+SIGMAs^2/lambda)/2^0.5/SIGMAs));
+
+
+figure,
+plot(X*Lb,Bb,'b');hold on
+plot(X*Ls,Bs,'r');hold on
+
+figure,
+plot(X,Bb,'b');hold on
+plot(X,Bs,'r');hold on
+
+
+
